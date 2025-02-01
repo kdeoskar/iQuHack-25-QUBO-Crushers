@@ -1,52 +1,42 @@
-from dimod import ConstrainedQuadraticModel, Binary
+from dimod import BinaryQuadraticModel, ConstrainedQuadraticModel, Binary, Integer
 import random
 from dwave.system import LeapHybridCQMSampler
 
 cqm = ConstrainedQuadraticModel()
+# bqm = BinaryQuadraticModel()
 sampler = LeapHybridCQMSampler()
 
 ### Given ###
-num_locations = 50
+num_locations = 10
 num_coolers = 5
 num_servers = 5
 amount_cooling_used = {}
-amount_cooling_needed  ={}
-for t in range(0, 12):
-    # Dictionary mapping the months to lists of how much cooling each cooler provided
-    amount_cooling_used[t] = [0 for i in range(num_coolers)]
-    # Dictionary mapping the months to lists of how much cooling each server needed
-    amount_cooling_needed[t] = [0 for i in range(num_servers)]
+amount_cooling_needed = {}
 
-### Variables ###
-cooler_location = {}
-cooling_provided = {}
-for t in range(0, 12):
-    # Dictionary mapping the months to lists that map each cooler to its location at that month. A 1 means the cooler i was at server j
-    cooler_location[t] = [0 for i in range(num_coolers) for j in range(num_servers)]
-    # Dictionary mapping the months to lists that map how much cooling each cooler i provided to server j during that month
-    cooling_provided[t] = [0 for i in range(num_coolers) for j in range(num_servers)]
+# Cooler position matrix over time
+X = [[[Binary(f"{i}_{m}_{t}") for i in range(num_coolers)] for m in range(num_servers+num_coolers)] for t in range(0,12)]
+# Server position matrix over time (should be fixed)
+Y = [[[Binary(f"{j}_{n}_{t}") for j in range(num_servers)] for n in range(num_servers+num_coolers)] for t in range(0,12)]
+# Amount of cooling provided by cooler i to server j across time
+Z = [[[Integer(f"{i}_{j}_{t}") for i in range(num_coolers)] for j in range(num_servers)] for t in range(0,12)]
+# Change c and r later, they should be inputted by the user
+amount_cooling_used = [[Integer(f"{i}_{t}") for i in range(num_coolers)] for t in range(0,12)]
+amount_cooling_needed = [[Integer(f"{j}_{t}") for j in range(num_servers)] for t in range(0,12)]
+cost_to_move = [[Integer(f"{i}_{t}") for i in range(num_coolers)] for t in range(0,12)]
+cost_to_stay = [[Integer(f"{i}_{t}") for i in range(num_coolers) for t in range(0,12)]]
 
-### Constraints ###
-cost_per_server = [0 for j in range(num_servers)]
-cooling_total_per_server = [0 for j in range(num_servers)]
 for j in range(num_servers):
-    cooling_total_per_server[j] = sum(amount_cooling_needed[t][j] for t in range(0, 12))
-    for t in range(0, 12):
-        cost_per_server[j] = sum(cooling_provided[t][i*j]*5 for i in range(num_coolers))
-
-### Cost ###
-cost_to_move_cooler = 10
-cost_to_run = 5
-cost_to_move = {}
-cost_to_keep = {}
+    cqm.add_constraint(sum([[Z[i][j][t] for i in range(num_coolers)] for t in range(0,12)]) == sum([amount_cooling_needed[j][t] for t in range(0,12)]))
 for i in range(num_coolers):
-    for t in range(0, 12):
-        # Dictionary mapping the months to lists of how much it would cost to move each server
-        cost_to_move[t] = [cost_to_move_cooler for j in range(num_servers)]
-        # Dictionary mapping the months to lists of how much it would cost to keep the cooler running
-        cost_to_keep[t] = [cost_to_run for i in range(num_coolers)]
+    cqm.add_constraint(sum([[Z[i][j][t] for j in range(num_servers)] for t in range(0,12)]) == sum([amount_cooling_used[i][t] for t in range(0,12)]))
+cqm.add_constraint(sum([[[X[i][m][t] for i in range(num_coolers)] for m in range(0, num_coolers+num_servers-1)] for t in range(0,12)]) == num_coolers)
+cqm.add_constraint(sum([[[Y[j][n][t] for j in range(num_servers)] for n in range(0, num_coolers+num_servers-1)] for t in range(0,12)]) == num_servers)
 
-cost_total = sum([sum(cost_to_move[t]) for t in range(0,12)]) + sum([sum(cost_to_keep[t]) for t in range(0,12)])
 
-print(cost_total)
-# sampler.sample_cqm(cqm)
+obj = sum([[cost_to_move[i][t] + cost_to_stay[i][t] for i in range(num_coolers)] for t in range(0,12)])
+
+res = sampler.sample_cqm(cqm, time_limit=10.0)
+res.resolve()
+
+feasible_sampleset = res.filter(lambda d: d.is_feasible)
+print(feasible_sampleset)
