@@ -2,6 +2,10 @@ from django.shortcuts import render
 import plotly.graph_objects as go
 from plotly.offline import plot
 import numpy as np
+from backend.qpsolver import QPSolver
+
+qpsolver = QPSolver()
+qpsolver.setup_cqm()
 
 def index(request):
     months_data = {

@@ -205,7 +205,6 @@ class QPSolver:
         # Create a scatterplot of heat for the frontend
         r_winter_columns = self.r[0]
         r_summer_columns = self.r[2]
-        max_temp = max(r_summer_columns)
 
         h = []
         for position in range(self.lx*self.ly):
@@ -249,13 +248,12 @@ class QPSolver:
 
         plt.colorbar(scatter_1, ax=axs[0])
         plt.colorbar(scatter_2, ax=axs[1])
-        plt.show()
-        # plt.savefig("static/plot.png")
+        plt.savefig("static/plot.png")
         plt.close()
 
 
 qp = QPSolver(15, 5, 20, 6, 7)
-# qp.setup_cqm()
-# qp.run_cqm()
-# qp.get_results()
-qp.create_heatmap()
+qp.setup_cqm()
+qp.run_cqm()
+qp.get_results()
+# qp.create_heatmap()
