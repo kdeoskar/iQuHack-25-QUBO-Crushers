@@ -37,6 +37,15 @@ class QPSolver:
             for j in range(self.C + self.D)
         ]
 
+        self.r = [
+            [
+                30 + a * (np.sin(np.pi * i / 3) + np.sin(np.pi * j / 4))
+                for j in range(5)
+                for i in range(4)
+            ]
+            for a in [-A, 0, A, 0]
+        ]
+
     def setup_cqm(self):
         # Setup the constraints and the objective function for the self.CQM
         self.cqm = ConstrainedQuadraticModel()
