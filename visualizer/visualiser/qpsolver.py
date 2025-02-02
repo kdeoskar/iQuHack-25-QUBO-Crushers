@@ -57,10 +57,11 @@ class QPSolver:
             for a in [-A, -A / 4, A / 4, A, A / 4, -A / 4]
         ]
 
-        plt.plot(self.r[0])
-        plt.plot(self.r[1])
-        plt.plot(self.r[2])
-        plt.show()
+        # plt.plot(self.r[0])
+        # plt.plot(self.r[1])
+        # plt.plot(self.r[2])
+        # plt.show()
+        # plt.close()
 
         # print(self.r[0])
         # print(self.r[1])
@@ -105,9 +106,7 @@ class QPSolver:
                             * self.y[j][m][t]
                             * self.y[j][n][(t + 1) % self.T]
                         )
-
         self.cqm.set_objective(c_flow + c_move)
-
         for t in range(self.T):
             self.cqm.add_constraint(
                 quicksum(
@@ -248,12 +247,5 @@ class QPSolver:
 
         plt.colorbar(scatter_1, ax=axs[0])
         plt.colorbar(scatter_2, ax=axs[1])
-        plt.savefig("static/plot.png")
+        # plt.savefig("static/plot.png")
         plt.close()
-
-
-qp = QPSolver(15, 5, 20, 6, 7)
-qp.setup_cqm()
-qp.run_cqm()
-qp.get_results()
-# qp.create_heatmap()
