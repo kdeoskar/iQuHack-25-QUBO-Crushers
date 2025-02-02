@@ -49,7 +49,8 @@ class QPSolver:
 
         self.r = [
             [
-                30 + a * np.cos(min([i, j, x - i - 1 , y - j - 1]))
+                30
+                + a * np.cos(2 * np.pi * min([i, j, x - i - 1, y - j - 1]) / min(x, y))
                 for j in range(y)
                 for i in range(x)
             ]
@@ -209,13 +210,13 @@ class QPSolver:
         h = []
         for position in range(self.lx*self.ly):
             temp = r_winter_columns[position]
-            h.append((temp / max_temp) * 100)
+            h.append(temp)
         winter_colors = np.array(h)
 
         h = []
         for position in range(self.lx*self.ly):
             temp = r_summer_columns[position]
-            h.append((temp / max_temp) * 100)
+            h.append(temp)
         summer_colors = np.array(h)
 
         rows = np.repeat(np.arange(self.ly), self.lx)
@@ -251,3 +252,10 @@ class QPSolver:
         plt.show()
         # plt.savefig("static/plot.png")
         plt.close()
+
+
+qp = QPSolver(15, 5, 20, 6, 7)
+qp.setup_cqm()
+qp.run_cqm()
+qp.get_results()
+# qp.create_heatmap()
