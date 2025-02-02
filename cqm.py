@@ -153,3 +153,10 @@ x_out = []
 #     x_out.append("next")
 
 # print(x_out)
+
+# Plotting Temp
+# h = []
+# for position in range(15):
+#     temp = r_winter_values[position]
+#     h.append((101)-(temp*100)/(44))
+# colors = np.array(h)
