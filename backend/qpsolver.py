@@ -39,7 +39,13 @@ class QPSolver:
         ]
 
     def setup_cqm(self):
+        # Setup the constraints and the objective function for the CQM
         pass
 
     def run_cqm(self):
+        # Find an optimal solution to the quadratic program
+        pass
+
+    def get_results(self):
+        # Output self.x and self.y in a way that is easy to work with for the frontend
         pass
