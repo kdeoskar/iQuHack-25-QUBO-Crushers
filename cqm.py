@@ -1,9 +1,17 @@
 from dwave.system import LeapHybridCQMSampler
 from dimod import Binary, ConstrainedQuadraticModel, Real, quicksum
+import numpy as np
 
-C = 10
-D = 5
-T = 6
+C = 10  # Numer of coolers
+D = 5  # Number of servers
+T = 6  # Number of time steps
+
+A = 7.5 # Amplitude of temperature change
+
+r_winter_columns = np.array([[30+A*abs(np.sin(np.pi*(i/3)))+A*abs(np.sin(np.pi*(j/4))) for i in range(0,4)] for j in range(0,5)]).flatten()
+r_summer_columns = np.array([[30-A*abs(np.sin(np.pi*(i/3)))-A*abs(np.sin(np.pi*(j/4))) for i in range(0,4)] for j in range(0,5)]).flatten()
+c_winter_columns = r_winter_columns
+c_summer_columns = r_summer_columns
 
 # Index/Position/Time
 x = [
@@ -15,6 +23,8 @@ y = [
     for j in range(D)
 ]
 z = [[[Binary(f"z_{j}_{i}_{t}") for t in range(T)] for i in range(C)] for j in range(D)]
+
+# Multiplication of y and z -- This is to account for cubic stuff not working in CQMs
 yz = [
     [
         [[Binary(f"yz_{i}_{j}_{n}_{t}") for t in range(T)] for n in range(C + D)]
@@ -22,6 +32,8 @@ yz = [
     ]
     for i in range(C)
 ]
+
+# Distance matrix
 d = [[abs(i - j) for i in range(C + D)] for j in range(C + D)]
 
 
@@ -77,15 +89,18 @@ for t in range(T):
             for j in range(D):
                 c_move += d[m][n] * d[m][n] * y[j][m][t] * y[j][n][(t + 1) % T]
 
+cqm.set_objective(c_flow + c_move)
+
 sampler = LeapHybridCQMSampler()
 sampleset = sampler.sample_cqm(cqm).filter(lambda d: d.is_feasible)
 output = sampleset.first.sample
 x_out = []
 
 # x
-for t in range(T):
-    for i in range(C):
-        for m in range(C + D):
-            x_out.append(int(output[f"x_{i}_{m}_{t}"]))
+# for t in range(T):
+#     for m in range(C + D):
+#         x_out.append(int(output[f"x_0_{m}_{t}"]))
+#
+#     x_out.append("next")
 
 print(x_out)
