@@ -75,7 +75,7 @@
         .plot-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr); /* 2 columns */
-            grid-template-rows: repeat(2, 1fr);    /* 2 rows */
+            grid-template-rows: repeat(3, 1fr);    /* 2 rows */
             gap: 20px; /* Space between plots */
             justify-content: center;
             align-items: center;
@@ -106,14 +106,14 @@
     <div class="app-container">
         <header class="app-header">
             <h1>Data Center Layout Optimization</h1>
-            <p>Visualizing Seasonal Layouts</p>
+            <p>Visualizing Monthly Layouts</p>
         </header>
 
         <main class="main-content">
             <section class="output-section" id="output-section">
                 <div class="plot-grid">
-                    {% for season, plot_div in plot_divs.items %}
-                        <div id="{{ season }}-plot" class = "plot-container">
+                    {% for month, plot_div in plot_divs.items %}
+                        <div id="{{ month }}-plot" class = "plot-container">
                             {{ plot_div|safe }}
                         </div>
                     {% endfor %}

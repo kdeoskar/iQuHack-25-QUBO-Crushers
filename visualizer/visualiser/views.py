@@ -4,29 +4,43 @@ from plotly.offline import plot
 import numpy as np
 
 def index(request):
-    seasons_data = {
-        'Winter': np.array([
+    months_data = {
+        'February': np.array([
             [1, 2, 2, 2],
             [2, 2, 1, 2],
             [2, 2, 1, 2],
             [2, 2, 2, 1],
             [2, 1, 2, 2]
         ]),
-        'Spring': np.array([
+        'April': np.array([
             [2, 2, 1, 2],
             [2, 2, 2, 1],
             [1, 2, 2, 2],
             [2, 1, 2, 2],
             [2, 2, 2, 1]
         ]),
-        'Summer': np.array([
+        'June': np.array([
             [2, 1, 2, 2],
             [1, 2, 2, 2],
             [2, 2, 2, 1],
             [2, 2, 1, 2],
             [1, 2, 2, 2]
         ]),
-        'Fall': np.array([
+        'August': np.array([
+            [2, 2, 2, 1],
+            [2, 1, 2, 2],
+            [2, 2, 1, 2],
+            [1, 2, 2, 2],
+            [2, 2, 2, 1]
+        ]),
+        'October': np.array([
+            [2, 2, 2, 1],
+            [2, 1, 2, 2],
+            [2, 2, 1, 2],
+            [1, 2, 2, 2],
+            [2, 2, 2, 1]
+        ]),
+        'December': np.array([
             [2, 2, 2, 1],
             [2, 1, 2, 2],
             [2, 2, 1, 2],
@@ -36,7 +50,7 @@ def index(request):
     }
 
     plot_divs = {}
-    for season, matrix in seasons_data.items():
+    for month, matrix in months_data.items():
         fig = go.Figure()
 
         rows, cols = matrix.shape
@@ -73,7 +87,7 @@ def index(request):
                 )
 
         fig.update_layout(
-            title=f"Optimal - {season}",
+            title=f"Optimal - {month}",
             title_font=dict(size=18),
             title_x=0.5,
             title_xanchor='center',
@@ -86,7 +100,7 @@ def index(request):
             margin=dict(l=30, r=30, t=50, b=30),  # Small margins
         )
 
-        plot_divs[season] = plot(fig, output_type='div', include_plotlyjs=False)
+        plot_divs[month] = plot(fig, output_type='div', include_plotlyjs=False)
 
     context = {
         'plot_divs': plot_divs,
