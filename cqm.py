@@ -80,15 +80,18 @@ for t in range(T):
             for j in range(D):
                 c_move += d[m][n] * d[m][n] * y[j][m][t] * y[j][n][(t + 1) % T]
 
+cqm.set_objective(c_flow + c_move)
+
 sampler = LeapHybridCQMSampler()
 sampleset = sampler.sample_cqm(cqm).filter(lambda d: d.is_feasible)
 output = sampleset.first.sample
 x_out = []
 
 # x
-for t in range(T):
-    for i in range(C):
-        for m in range(C + D):
-            x_out.append(int(output[f"x_{i}_{m}_{t}"]))
+# for t in range(T):
+#     for m in range(C + D):
+#         x_out.append(int(output[f"x_0_{m}_{t}"]))
+#
+#     x_out.append("next")
 
 print(x_out)
