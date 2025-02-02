@@ -180,21 +180,20 @@ class QPSolver:
 
     def create_heatmap(self):
         # Create a scatterplot of heat for the frontend
-        h = []
         r_winter_columns = self.r[0]
-        r_spring_columns = self.r[1]
         r_summer_columns = self.r[2]
-        r_fall_columns = self.r[3]
         max_temp = max(r_summer_columns)
 
+        h = []
         for position in range(21):
             temp = r_winter_columns[position]
-            h.append(temp / max_temp * 100)
+            h.append((temp / max_temp) * 100)
         winter_colors = np.array(h)
+
         h = []
         for position in range(21):
             temp = r_summer_columns[position]
-            h.append(temp / max_temp * 100)
+            h.append((temp / max_temp) * 100)
         summer_colors = np.array(h)
 
         x = np.array([i for i in range(4)])
