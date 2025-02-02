@@ -273,22 +273,28 @@
         <main class="main-content">
             <section class="input-section" id="input-section">
                 <h2>Input Data</h2>
-                <div class="file-upload">
+                <!-- <div class="file-upload">
                     <label for="distanceFile">Distance Matrix (CSV):</label>
-                    <span class="custom-file-upload">
-                        <input type="file" id="distanceFile" accept=".csv">
+                        <span class="custom-file-upload">
+                        <input type="file" name="file" id="distanceFile" accept=".csv">
                         Choose File
-                    </span>
+                        </span>                    
+                </div> -->
+                <form method="post" enctype="multipart/form-data">
                     
-                </div>
+                    {% csrf_token %}
+                    <input type="file" name="file">
+                    
+                    <input type="submit" value="submit"></span>
+                </form>
 
-                <div class="file-upload">
+                <!-- <div class="file-upload">
                     <label for="flowFiles">Flow Matrices (CSV, one per month):</label>
                     <span class="custom-file-upload">
                         <input type="file" id="flowFiles" accept=".csv" multiple>
                         Choose Files
                     </span>
-                </div>
+                </div> -->
 
                 <button class="optimize-button">Optimize Layout</button>
             </section>
