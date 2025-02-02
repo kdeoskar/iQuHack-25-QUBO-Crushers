@@ -5,49 +5,56 @@ import numpy as np
 
 def index(request):
     months_data = {
-        'February': np.array([
-            [1, 2, 2, 2],
-            [2, 2, 1, 2],
-            [2, 2, 1, 2],
-            [2, 2, 2, 1],
-            [2, 1, 2, 2]
-        ]),
-        'April': np.array([
-            [2, 2, 1, 2],
-            [2, 2, 2, 1],
-            [1, 2, 2, 2],
-            [2, 1, 2, 2],
-            [2, 2, 2, 1]
-        ]),
-        'June': np.array([
-            [2, 1, 2, 2],
-            [1, 2, 2, 2],
-            [2, 2, 2, 1],
-            [2, 2, 1, 2],
-            [1, 2, 2, 2]
-        ]),
-        'August': np.array([
-            [2, 2, 2, 1],
-            [2, 1, 2, 2],
-            [2, 2, 1, 2],
-            [1, 2, 2, 2],
-            [2, 2, 2, 1]
-        ]),
-        'October': np.array([
-            [2, 2, 2, 1],
-            [2, 1, 2, 2],
-            [2, 2, 1, 2],
-            [1, 2, 2, 2],
-            [2, 2, 2, 1]
-        ]),
-        'December': np.array([
-            [2, 2, 2, 1],
-            [2, 1, 2, 2],
-            [2, 2, 1, 2],
-            [1, 2, 2, 2],
-            [2, 2, 2, 1]
-        ]),
-    }
+    'February': np.array([
+        [1, 2, 1, 2, 1, 2, 2],
+        [2, 2, 1, 2, 2, 1, 2],
+        [2, 2, 1, 2, 2, 2, 1],
+        [2, 2, 2, 2, 2, 2, 2],
+        [2, 1, 2, 2, 2, 2, 2],
+        [1, 2, 2, 2, 2, 2, 2]
+    ]),
+    'April': np.array([
+        [2, 2, 1, 2, 2, 1, 2],
+        [2, 2, 2, 1, 1, 2, 2],
+        [1, 2, 2, 2, 2, 1, 2],
+        [2, 1, 2, 2, 1, 2, 2],
+        [2, 2, 2, 1, 2, 2, 1],
+        [1, 2, 1, 2, 2, 2, 2]
+    ]),
+    'June': np.array([
+        [2, 1, 2, 2, 1, 2, 2],
+        [1, 2, 2, 2, 2, 1, 2],
+        [2, 2, 2, 1, 1, 2, 2],
+        [2, 2, 1, 2, 2, 1, 2],
+        [1, 2, 2, 2, 1, 2, 2],
+        [2, 1, 2, 1, 2, 2, 2]
+    ]),
+    'August': np.array([
+        [2, 2, 2, 1, 2, 2, 1],
+        [2, 1, 2, 2, 1, 2, 2],
+        [2, 2, 1, 2, 2, 1, 2],
+        [1, 2, 2, 2, 1, 2, 2],
+        [2, 2, 2, 1, 2, 2, 1],
+        [2, 1, 2, 2, 2, 1, 2]
+    ]),
+    'October': np.array([
+        [2, 2, 2, 1, 2, 2, 1],
+        [2, 1, 2, 2, 1, 2, 2],
+        [2, 2, 1, 2, 2, 1, 2],
+        [1, 2, 2, 2, 1, 2, 2],
+        [2, 2, 2, 1, 2, 2, 1],
+        [1, 2, 1, 2, 2, 2, 2]
+    ]),
+    'December': np.array([
+        [2, 2, 2, 1, 2, 2, 1],
+        [2, 1, 2, 2, 1, 2, 2],
+        [2, 2, 1, 2, 2, 1, 2],
+        [1, 2, 2, 2, 1, 2, 2],
+        [2, 2, 2, 1, 2, 2, 1],
+        [2, 1, 2, 1, 2, 2, 2]
+    ]),
+}
+
 
     plot_divs = {}
     for month, matrix in months_data.items():
@@ -87,14 +94,14 @@ def index(request):
                 )
 
         fig.update_layout(
-            title=f"Optimal - {month}",
+            title=f"{month}",
             title_font=dict(size=18),
             title_x=0.5,
             title_xanchor='center',
             xaxis=dict(showgrid=False, zeroline=False, showticklabels=False, range=[-margin, width + margin]),
             yaxis=dict(showgrid=False, zeroline=False, showticklabels=False, range=[-margin, height + margin]),
-            width=450,  # Fixed width
-            height=450,  # Fixed height
+            width=600,  # Fixed width
+            height=600,  # Fixed height
             showlegend=False,
             plot_bgcolor='rgba(0,0,0,0)',  # Transparent background
             margin=dict(l=30, r=30, t=50, b=30),  # Small margins
