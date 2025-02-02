@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import fileUpload
-# from ...pythonsolver.cqm import cqmSolver
+from .cqm import obtain_data
+
 # Create your views here.
 
 def index(request):
@@ -13,5 +14,5 @@ def index(request):
 
 def CQMvisualizer(request):
     if (request.GET.get('mybtn')):
-        pass
-        
+        obtain_data()
+
