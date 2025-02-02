@@ -1,9 +1,9 @@
 from dwave.system import LeapHybridCQMSampler
 from dimod import Binary, ConstrainedQuadraticModel, Real, quicksum
 
-C = 10
-D = 5
-T = 6
+C = 10  # Numer of coolers
+D = 5  # Number of servers
+T = 6  # Number of time steps
 
 # Index/Position/Time
 x = [
@@ -15,6 +15,8 @@ y = [
     for j in range(D)
 ]
 z = [[[Binary(f"z_{j}_{i}_{t}") for t in range(T)] for i in range(C)] for j in range(D)]
+
+# Multiplication of y and z -- This is to account for cubic stuff not working in CQMs
 yz = [
     [
         [[Binary(f"yz_{i}_{j}_{n}_{t}") for t in range(T)] for n in range(C + D)]
@@ -22,6 +24,8 @@ yz = [
     ]
     for i in range(C)
 ]
+
+# Distance matrix
 d = [[abs(i - j) for i in range(C + D)] for j in range(C + D)]
 
 cqm = ConstrainedQuadraticModel()
