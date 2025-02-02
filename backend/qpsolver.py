@@ -1,6 +1,7 @@
 from dwave.system import LeapHybridCQMSampler
 from dimod import Binary, ConstrainedQuadraticModel, quicksum
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class QPSolver:
@@ -160,3 +161,32 @@ class QPSolver:
     def get_results(self):
         # Output self.x and self.y in a way that is easy to work with for the frontend
         pass
+
+    def create_heatmap(self):
+        # Create a scatterplot of heat for the frontend
+        h = []
+        for position in range(16):
+            temp = self.r_winter_columns[position]
+            h.append((58/temp)*6)
+        winter_colors = np.array(h)
+        h=[]
+        for position in range(16):
+            temp = self.r_summer_columns[position]
+            h.append((58/temp)*6)
+        summer_colors = np.array(h)
+
+        x = np.array([i for i in range(4)])
+        y = np.array([j for j in range(5)])
+        fig, axs = plt.subplots(1, 2, figsize=(10, 4))
+        axs[0].scatter(x, y, c=winter_colors, cmap="viridis", label="Winter Temperature Gradient in the Room")
+        axs[0].set_title("Winter Temperature Gradient")
+        axs[0].grid(True)
+        axs[0].colorbar()
+
+        axs[1].scatter(x, y, c=summer_colors, cmap="viridis", label="Summer Temperature Gradient in the Room")
+        axs[1].set_title("Summer Temperature Gradient")
+        axs[1].grid(True)
+        axs[1].colorbar()
+        
+        plt.tight_layout()
+        plt.show()
