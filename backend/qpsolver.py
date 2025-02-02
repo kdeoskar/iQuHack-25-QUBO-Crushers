@@ -230,7 +230,7 @@ class QPSolver:
             cmap="viridis",
             label=f"Winter Temperature Gradient in the Room",
         )
-        axs[0].set_title(f"Winter Temperature Gradient, A = {self.A}")
+        axs[0].set_title(f"Winter Relative Temperatures, A = {self.A}")
         axs[0].grid(False)
         axs[0].set_xlim(-0.5, self.lx-0.5)
         axs[0].set_ylim(-0.5, self.ly-0.5)
@@ -242,7 +242,7 @@ class QPSolver:
             cmap="viridis",
             label=f"Summer Temperature Gradient in the Room",
         )
-        axs[1].set_title(f"Summer Temperature Gradient, A = {self.A}")
+        axs[1].set_title(f"Summer Relative Temperatures, A = {self.A}")
         axs[1].grid(False)
         axs[1].set_xlim(-0.5, self.lx-0.5)
         axs[1].set_ylim(-0.5, self.ly-0.5)
@@ -255,7 +255,7 @@ class QPSolver:
 
 
 qp = QPSolver(15, 5, 20, 6, 7)
-qp.setup_cqm()
-qp.run_cqm()
-qp.get_results()
-# qp.create_heatmap()
+# qp.setup_cqm()
+# qp.run_cqm()
+# qp.get_results()
+qp.create_heatmap()

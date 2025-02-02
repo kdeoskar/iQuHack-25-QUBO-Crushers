@@ -100,8 +100,8 @@ def index(request):
             title_xanchor='center',
             xaxis=dict(showgrid=False, zeroline=False, showticklabels=False, range=[-margin, width + margin]),
             yaxis=dict(showgrid=False, zeroline=False, showticklabels=False, range=[-margin, height + margin]),
-            width=600,  # Fixed width
-            height=600,  # Fixed height
+            width=(cols*80),  # Fixed width
+            height=(rows*80),  # Fixed height
             showlegend=False,
             plot_bgcolor='rgba(0,0,0,0)',  # Transparent background
             margin=dict(l=30, r=30, t=50, b=30),  # Small margins
