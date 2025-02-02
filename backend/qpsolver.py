@@ -51,8 +51,10 @@ class QPSolver:
 
         self.r = [
             [
-                30 + a * (np.sin(np.pi * i / 3) + np.sin(np.pi * j / 4))
-                for j in range(5)
+                [
+                    30 + a * (np.sin(np.pi * i / 3) + np.sin(np.pi * j / 4))
+                    for j in range(5)
+                ]
                 for i in range(4)
             ]
             for a in [-A, 0, A, 0]
@@ -165,14 +167,19 @@ class QPSolver:
     def create_heatmap(self):
         # Create a scatterplot of heat for the frontend
         h = []
+        max_temp = max(self.r_summer_columns)
+        r_winter_columns = self.r[0:20]
+        r_spring_columns = self.r[20:40]
+        r_summer_columns = self.r[40:60]
+        r_fall_columns = self.r[60:80]
         for position in range(16):
-            temp = self.r_winter_columns[position]
-            h.append((58/temp)*6)
+            temp = r_winter_columns[position]
+            h.append(temp/max_temp * 100)
         winter_colors = np.array(h)
         h=[]
         for position in range(16):
-            temp = self.r_summer_columns[position]
-            h.append((58/temp)*6)
+            temp = r_summer_columns[position]
+            h.append(temp/max_temp * 100)
         summer_colors = np.array(h)
 
         x = np.array([i for i in range(4)])
@@ -187,6 +194,6 @@ class QPSolver:
         axs[1].set_title("Summer Temperature Gradient")
         axs[1].grid(True)
         axs[1].colorbar()
-        
+
         plt.tight_layout()
         plt.show()
