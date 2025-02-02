@@ -1,9 +1,13 @@
 from dwave.system import LeapHybridCQMSampler
 from dimod import Binary, ConstrainedQuadraticModel, Real, quicksum
+import numpy as np
 
 C = 10  # Numer of coolers
 D = 5  # Number of servers
 T = 6  # Number of time steps
+
+r_winter_columns = [[15+abs(np.sin(np.pi*(i/3)))+abs(np.sin(np.pi*(j/4))) for i in range(0,4)] for j in range(0,5)]
+
 
 # Index/Position/Time
 x = [
