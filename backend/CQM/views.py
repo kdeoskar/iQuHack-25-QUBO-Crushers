@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import fileUpload
+# from ...pythonsolver.cqm import cqmSolver
+# Create your views here.
 
 def index(request):
     # return HttpResponse("This is the index page.")
@@ -9,4 +11,7 @@ def index(request):
         fileUpload.objects.create(file=fileSave)
     return render(request, "index.html")
 
-# Create your views here.
+def CQMvisualizer(request):
+    if (request.GET.get('mybtn')):
+        pass
+        
