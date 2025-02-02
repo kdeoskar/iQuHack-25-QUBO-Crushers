@@ -1,15 +1,31 @@
 from dwave.system import LeapHybridCQMSampler
-from dimod import Binary, ConstrainedQuadraticModel, Real, quicksum
+from dimod import Binary, ConstrainedQuadraticModel, quicksum
 import numpy as np
 
-C = 10  # Numer of coolers
-D = 5  # Number of servers
-T = 6  # Number of time steps
+C = 5  # Numer of coolers
+D = 15  # Number of servers
+T = 4  # Number of time steps
 
-A = 7.5 # Amplitude of temperature change
+A = 7.5  # Amplitude of temperature change
 
-r_winter_columns = np.array([[30+A*abs(np.sin(np.pi*(i/3)))+A*abs(np.sin(np.pi*(j/4))) for i in range(0,4)] for j in range(0,5)]).flatten()
-r_summer_columns = np.array([[30-A*abs(np.sin(np.pi*(i/3)))-A*abs(np.sin(np.pi*(j/4))) for i in range(0,4)] for j in range(0,5)]).flatten()
+r_winter_columns = np.array(
+    [
+        [
+            30 + A * abs(np.sin(np.pi * (i / 3))) + A * abs(np.sin(np.pi * (j / 4)))
+            for i in range(0, 4)
+        ]
+        for j in range(0, 5)
+    ]
+).flatten()
+r_summer_columns = np.array(
+    [
+        [
+            30 - A * abs(np.sin(np.pi * (i / 3))) - A * abs(np.sin(np.pi * (j / 4)))
+            for i in range(0, 4)
+        ]
+        for j in range(0, 5)
+    ]
+).flatten()
 c_winter_columns = r_winter_columns
 c_summer_columns = r_summer_columns
 
@@ -18,10 +34,12 @@ x = [
     [[Binary(f"x_{i}_{m}_{t}") for t in range(T)] for m in range(C + D)]
     for i in range(C)
 ]
+
 y = [
     [[Binary(f"y_{j}_{n}_{t}") for t in range(T)] for n in range(C + D)]
     for j in range(D)
 ]
+
 z = [[[Binary(f"z_{j}_{i}_{t}") for t in range(T)] for i in range(C)] for j in range(D)]
 
 # Multiplication of y and z -- This is to account for cubic stuff not working in CQMs
@@ -34,7 +52,39 @@ yz = [
 ]
 
 # Distance matrix
-d = [[abs(i - j) for i in range(C + D)] for j in range(C + D)]
+d = [
+    [
+        (((j % 4) - (i % 4)) ** 2 + ((j // 4) - (i // 4)) ** 2) ** 0.5
+        for i in range(C + D)
+    ]
+    for j in range(C + D)
+]
+
+A = 3
+r_winter_columns = list(
+    np.array(
+        [
+            [
+                30 + A * abs(np.sin(np.pi * (i / 3))) + A * abs(np.sin(np.pi * (j / 4)))
+                for i in range(0, 4)
+            ]
+            for j in range(0, 5)
+        ]
+    ).flatten()
+)
+r_summer_columns = list(
+    np.array(
+        [
+            [
+                30 - A * abs(np.sin(np.pi * (i / 3))) - A * abs(np.sin(np.pi * (j / 4)))
+                for i in range(0, 4)
+            ]
+            for j in range(0, 5)
+        ]
+    ).flatten()
+)
+
+print(r_summer_columns)
 
 cqm = ConstrainedQuadraticModel()
 
@@ -102,4 +152,4 @@ x_out = []
 #
 #     x_out.append("next")
 
-print(x_out)
+# print(x_out)
