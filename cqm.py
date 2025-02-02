@@ -24,6 +24,7 @@ yz = [
 ]
 d = [[abs(i - j) for i in range(C + D)] for j in range(C + D)]
 
+
 cqm = ConstrainedQuadraticModel()
 
 for t in range(T):
