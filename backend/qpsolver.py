@@ -43,23 +43,26 @@ class QPSolver:
                 (((j % x) - (i % x)) ** 2 + ((j // x) - (i // x)) ** 2) ** 0.5
                 for i in range(x * y)
             ]
-            for j in range(self.lx * self.ly)
+            for j in range(x * y)
         ]
 
         self.r = [
             [
-                30
-                + a
-                * (abs(np.sin(np.pi * i / (x - 1))) + abs(np.sin(np.pi * j / (y - 1))))
+                30 + a * np.sin(min([i, j, x - i, y - j]))
                 for j in range(y)
                 for i in range(x)
             ]
             for a in [-A, -A / 4, A / 4, A, A / 4, -A / 4]
         ]
 
-        print(self.r[0])
-        print(self.r[1])
-        print(self.r[2])
+        plt.plot(self.r[0])
+        plt.plot(self.r[1])
+        plt.plot(self.r[2])
+        plt.show()
+
+        # print(self.r[0])
+        # print(self.r[1])
+        # print(self.r[2])
 
         self.result = None
 
@@ -243,7 +246,7 @@ class QPSolver:
         plt.close()
 
 
-qp = QPSolver(15, 5, 20, 6, 9)
+qp = QPSolver(15, 5, 20, 6, 5)
 qp.setup_cqm()
 qp.run_cqm()
 print(qp.get_results())
