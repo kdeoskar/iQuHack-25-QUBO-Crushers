@@ -44,6 +44,19 @@ Using D-Wave’s CQM hybrid solver, we:
 - **Reduced movement costs** by minimizing unnecessary relocation.
 - **Scalability analysis** to understand solver performance on larger problem instances.
 
+## How to use
+To use our code, open views.py in visualizer/visualiser. Here, you will see qpsolve = QPSOlve(5 parameters). This first parameter changes the amplitude of the change in termperature across the room, the second changes the number of coolers, the third the number of servers, the fourth the x dimension of the room, and the fifth the y dimension of the room. Once you have set these values, open a terminal and make sure you are in iQuHack-25-QUBO-Crushers\visualizer, then enter py manage.py runserver. This will initialize the function. After a bit of time, you will recieve a message similar to the one below:
+
+Sampling started
+-4654.719561566389
+System check identified no issues (0 silenced).
+February 02, 2025 - 09:44:50
+Django version 5.1.5, using settings 'visualizer.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+
+Click on the link while pressing Ctrl on your keyboard to open the results page. Here you will see the optimal results of the simulation across a year every other month.
+
 ## Future Work
 
 - Extending the model to **multi-floor data centers**.
