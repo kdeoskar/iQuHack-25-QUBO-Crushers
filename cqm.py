@@ -1,6 +1,7 @@
 from dwave.system import LeapHybridCQMSampler
 from dimod import Binary, ConstrainedQuadraticModel, quicksum
 import numpy as np
+import matplotlib.pyplot as plt
 
 C = 5  # Numer of coolers
 D = 15  # Number of servers
@@ -84,8 +85,6 @@ r_summer_columns = list(
     ).flatten()
 )
 
-print(r_summer_columns)
-
 cqm = ConstrainedQuadraticModel()
 
 for t in range(T):
@@ -155,8 +154,18 @@ x_out = []
 # print(x_out)
 
 # Plotting Temp
-# h = []
-# for position in range(15):
-#     temp = r_winter_values[position]
-#     h.append((101)-(temp*100)/(44))
-# colors = np.array(h)
+h = []
+for position in range(16):
+    temp = r_winter_columns[position]
+    h.append((58/temp)*6)
+winter_colors = np.array(h)
+h=[]
+for position in range(16):
+    temp = r_summer_columns[position]
+    h.append((58/temp)*6)
+summer_colors = np.array(h)
+
+x = np.array([i for i in range(4)])
+y = np.array([j for j in range(5)])
+plt.scatter(x, y, c=winter_colors, cmap="viridis")
+plt.show()
