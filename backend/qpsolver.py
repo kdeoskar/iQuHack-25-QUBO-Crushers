@@ -194,21 +194,23 @@ class QPSolver:
         max_temp = max(r_summer_columns)
 
         h = []
-        for position in range(21):
+        for position in range(42):
             temp = r_winter_columns[position]
             h.append((temp / max_temp) * 100)
         winter_colors = np.array(h)
 
         h = []
-        for position in range(21):
+        for position in range(42):
             temp = r_summer_columns[position]
             h.append((temp / max_temp) * 100)
         summer_colors = np.array(h)
 
-        x = np.array([i for i in range(4)])
-        y = np.array([j for j in range(5)])
+        x = np.repeat(np.arange(7), 6)
+        print(x)
+        y = np.tile(np.arange(6), 7)
+        print(y)
         fig, axs = plt.subplots(1, 2, figsize=(10, 4))
-        axs[0].scatter(
+        scatter_1 = axs[0].scatter(
             x,
             y,
             c=winter_colors,
@@ -216,10 +218,9 @@ class QPSolver:
             label="Winter Temperature Gradient in the Room",
         )
         axs[0].set_title("Winter Temperature Gradient")
-        axs[0].grid(True)
-        axs[0].colorbar()
+        axs[0].grid(False)
 
-        axs[1].scatter(
+        scatter_2 = axs[1].scatter(
             x,
             y,
             c=summer_colors,
@@ -227,10 +228,12 @@ class QPSolver:
             label="Summer Temperature Gradient in the Room",
         )
         axs[1].set_title("Summer Temperature Gradient")
-        axs[1].grid(True)
-        axs[1].colorbar()
+        axs[1].grid(False)
 
-        plt.savefig("static/plot.png")
+        plt.colorbar(scatter_1, ax=axs[0])
+        plt.colorbar(scatter_2, ax=axs[1])
+        plt.show()
+        # plt.savefig("static/plot.png")
         plt.close()
 
 
@@ -238,3 +241,6 @@ class QPSolver:
 # qp.setup_cqm()
 # qp.run_cqm()
 # print(qp.get_results())
+
+qpsolver = QPSolver(15)
+qpsolver.create_heatmap()
