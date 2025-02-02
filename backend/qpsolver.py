@@ -5,23 +5,20 @@ import matplotlib.pyplot as plt
 
 
 class QPSolver:
-    def __init__(self, A) -> None:
-        self.C = 5
-        self.D = 15
-        self.T = 4
+    def __init__(self, A, C, D, x, y) -> None:
+        self.lx = x
+        self.ly = y
+
+        self.C = C
+        self.D = D
+        self.T = 6
 
         self.x = [
-            [
-                [Binary(f"x_{i}_{m}_{t}") for t in range(self.T)]
-                for m in range(self.C + self.D)
-            ]
+            [[Binary(f"x_{i}_{m}_{t}") for t in range(self.T)] for m in range(x * y)]
             for i in range(self.C)
         ]
         self.y = [
-            [
-                [Binary(f"y_{j}_{n}_{t}") for t in range(self.T)]
-                for n in range(self.C + self.D)
-            ]
+            [[Binary(f"y_{j}_{n}_{t}") for t in range(self.T)] for n in range(x * y)]
             for j in range(self.D)
         ]
 
@@ -30,33 +27,42 @@ class QPSolver:
             for j in range(self.D)
         ]
 
-        self.yz = [
-            [
-                [
-                    [Binary(f"yz_{i}_{j}_{n}_{t}") for t in range(self.T)]
-                    for n in range(self.C + self.D)
-                ]
-                for j in range(self.D)
-            ]
-            for i in range(self.C)
-        ]
+        # self.yz = [
+        #     [
+        #         [
+        #             [Binary(f"yz_{i}_{j}_{n}_{t}") for t in range(self.T)]
+        #             for n in range(self.C + self.D)
+        #         ]
+        #         for j in range(self.D)
+        #     ]
+        #     for i in range(self.C)
+        # ]
 
         self.d = [
             [
-                (((j % 4) - (i % 4)) ** 2 + ((j // 4) - (i // 4)) ** 2) ** 0.5
-                for i in range(self.C + self.D)
+                (((j % x) - (i % x)) ** 2 + ((j // x) - (i // x)) ** 2) ** 0.5
+                for i in range(x * y)
             ]
-            for j in range(self.C + self.D)
+            for j in range(x * y)
         ]
 
         self.r = [
             [
-                30 + a * (np.sin(np.pi * i / 3) + np.sin(np.pi * j / 4))
-                for j in range(5)
-                for i in range(4)
+                30 + a * np.sin(min([i, j, x - i, y - j]))
+                for j in range(y)
+                for i in range(x)
             ]
-            for a in [-A, 0, A, 0]
+            for a in [-A, -A / 4, A / 4, A, A / 4, -A / 4]
         ]
+
+        plt.plot(self.r[0])
+        plt.plot(self.r[1])
+        plt.plot(self.r[2])
+        plt.show()
+
+        # print(self.r[0])
+        # print(self.r[1])
+        # print(self.r[2])
 
         self.result = None
 
@@ -70,17 +76,17 @@ class QPSolver:
         for t in range(self.T):
             for i in range(self.C):
                 for j in range(self.D):
-                    for n in range(self.C + self.D):
-                        for m in range(self.C + self.D):
+                    for n in range(self.lx * self.ly):
+                        for m in range(self.lx * self.ly):
                             c_flow += (
-                                self.x[i][m][t]
-                                * self.yz[i][j][n][t]
+                                -self.x[i][m][t]
+                                * self.y[j][n][t]
                                 * self.r[t][n]
                                 / (1 + self.d[m][n])
                             )
 
-                for n in range(self.C + self.D):
-                    for m in range(self.C + self.D):
+                for n in range(self.lx * self.ly):
+                    for m in range(self.lx + self.ly):
                         c_move += (
                             self.d[m][n]
                             * self.d[m][n]
@@ -89,8 +95,8 @@ class QPSolver:
                         )
 
             for j in range(self.D):
-                for m in range(self.C + self.D):
-                    for n in range(self.C + self.D):
+                for m in range(self.lx * self.ly):
+                    for n in range(self.lx * self.ly):
                         c_move += (
                             self.d[m][n]
                             * self.d[m][n]
@@ -106,7 +112,7 @@ class QPSolver:
                     [
                         self.x[i][m][t]
                         for i in range(self.C)
-                        for m in range(self.C + self.D)
+                        for m in range(self.lx * self.ly)
                     ]
                 )
                 == self.C
@@ -117,42 +123,42 @@ class QPSolver:
                     [
                         self.y[j][n][t]
                         for j in range(self.D)
-                        for n in range(self.C + self.D)
+                        for n in range(self.lx * self.ly)
                     ]
                 )
                 == self.D
             )
 
-            for n in range(self.C + self.D):
+            for n in range(self.lx * self.ly):
                 self.cqm.add_constraint(
                     quicksum(
                         [self.x[i][n][t] for i in range(self.C)]
                         + [self.y[j][n][t] for j in range(self.D)]
                     )
-                    == 1
+                    <= 1
                 )
 
             for j in range(self.D):
                 self.cqm.add_constraint(
-                    quicksum([self.y[j][n][t] for n in range(self.C + self.D)]) == 1
+                    quicksum([self.y[j][n][t] for n in range(self.lx * self.ly)]) == 1
                 )
 
             for i in range(self.C):
                 self.cqm.add_constraint(
-                    quicksum([self.x[i][m][t] for m in range(self.C + self.D)]) == 1
+                    quicksum([self.x[i][m][t] for m in range(self.lx * self.ly)]) == 1
                 )
-                for j in range(self.D):
-                    for n in range(self.C + self.D):
-                        self.cqm.add_constraint(
-                            self.yz[i][j][n][t] - self.y[j][n][t] <= 0
-                        )
-                        self.cqm.add_constraint(
-                            self.yz[i][j][n][t] - self.z[j][i][t] <= 0
-                        )
-                        self.cqm.add_constraint(
-                            self.yz[i][j][n][t] - self.y[j][n][t] - self.z[j][i][t]
-                            >= -1
-                        )
+                # for j in range(self.D):
+                #     for n in range(self.C + self.D):
+                #         self.cqm.add_constraint(
+                #             self.yz[i][j][n][t] - self.y[j][n][t] <= 0
+                #         )
+                #         self.cqm.add_constraint(
+                #             self.yz[i][j][n][t] - self.z[j][i][t] <= 0
+                #         )
+                #         self.cqm.add_constraint(
+                #             self.yz[i][j][n][t] - self.y[j][n][t] - self.z[j][i][t]
+                #             >= -1
+                #         )
 
     def run_cqm(self):
         # Find an optimal solution to the quadratic program
@@ -160,6 +166,7 @@ class QPSolver:
 
         print("Sampling started")
         sampleset = sampler.sample_cqm(self.cqm).filter(lambda d: d.is_feasible)
+        print(sampleset.first.energy)
 
         self.result = sampleset.first.sample
 
@@ -169,17 +176,25 @@ class QPSolver:
             print("Run CQM before getting result")
             return None
 
-        data = [[[0 for _ in range(4)] for _ in range(5)] for _ in range(self.T)]
+        data = [
+            [[0 for _ in range(self.lx)] for _ in range(self.ly)] for _ in range(self.T)
+        ]
 
         for t in range(self.T):
-            for i in range(self.C + self.D):
-                x = i % 4
-                y = i // 4
+            for i in range(self.lx * self.ly):
+                x = i % self.lx
+                y = i // self.lx
 
                 data[t][y][x] = (
                     1
                     if sum(self.result[f"x_{j}_{i}_{t}"] for j in range(self.C)) == 1
-                    else 2
+                    else 0
+                )
+
+                data[t][y][x] = (
+                    2
+                    if sum(self.result[f"y_{j}_{i}_{t}"] for j in range(self.D)) == 1
+                    else data[t][y][x]
                 )
 
         return data
@@ -191,21 +206,21 @@ class QPSolver:
         max_temp = max(r_summer_columns)
 
         h = []
-        for position in range(21):
+        for position in range(42):
             temp = r_winter_columns[position]
             h.append((temp / max_temp) * 100)
         winter_colors = np.array(h)
 
         h = []
-        for position in range(21):
+        for position in range(42):
             temp = r_summer_columns[position]
             h.append((temp / max_temp) * 100)
         summer_colors = np.array(h)
 
-        x = np.array([i for i in range(4)])
-        y = np.array([j for j in range(5)])
+        x = np.repeat(np.arange(7), 6)
+        y = np.tile(np.arange(6), 7)
         fig, axs = plt.subplots(1, 2, figsize=(10, 4))
-        axs[0].scatter(
+        scatter_1 = axs[0].scatter(
             x,
             y,
             c=winter_colors,
@@ -213,10 +228,9 @@ class QPSolver:
             label="Winter Temperature Gradient in the Room",
         )
         axs[0].set_title("Winter Temperature Gradient")
-        axs[0].grid(True)
-        axs[0].colorbar()
+        axs[0].grid(False)
 
-        axs[1].scatter(
+        scatter_2 = axs[1].scatter(
             x,
             y,
             c=summer_colors,
@@ -224,8 +238,16 @@ class QPSolver:
             label="Summer Temperature Gradient in the Room",
         )
         axs[1].set_title("Summer Temperature Gradient")
-        axs[1].grid(True)
-        axs[1].colorbar()
+        axs[1].grid(False)
 
-        plt.savefig("static/plot.png")
+        plt.colorbar(scatter_1, ax=axs[0])
+        plt.colorbar(scatter_2, ax=axs[1])
+        plt.show()
+        # plt.savefig("static/plot.png")
         plt.close()
+
+
+qp = QPSolver(15, 5, 20, 6, 5)
+qp.setup_cqm()
+qp.run_cqm()
+print(qp.get_results())
