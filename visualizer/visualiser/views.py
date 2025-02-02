@@ -2,61 +2,21 @@ from django.shortcuts import render
 import plotly.graph_objects as go
 from plotly.offline import plot
 import numpy as np
-from backend.qpsolver import QPSolver
+from .qpsolver import QPSolver
 
-qpsolver = QPSolver()
+qpsolver = QPSolver(15, 5, 10, 4, 5)
 qpsolver.setup_cqm()
+qpsolver.run_cqm()
+bimonthly_values = qpsolver.get_results()
 
 def index(request):
     months_data = {
-    'February': np.array([
-        [1, 2, 1, 2, 1, 2, 2],
-        [2, 2, 1, 2, 2, 1, 2],
-        [2, 2, 1, 2, 2, 2, 1],
-        [2, 2, 2, 2, 2, 2, 2],
-        [2, 1, 2, 2, 2, 2, 2],
-        [1, 2, 2, 2, 2, 2, 2]
-    ]),
-    'April': np.array([
-        [2, 2, 1, 2, 2, 1, 2],
-        [2, 2, 2, 1, 1, 2, 2],
-        [1, 2, 2, 2, 2, 1, 2],
-        [2, 1, 2, 2, 1, 2, 2],
-        [2, 2, 2, 1, 2, 2, 1],
-        [1, 2, 1, 2, 2, 2, 2]
-    ]),
-    'June': np.array([
-        [2, 1, 2, 2, 1, 2, 2],
-        [1, 2, 2, 2, 2, 1, 2],
-        [2, 2, 2, 1, 1, 2, 2],
-        [2, 2, 1, 2, 2, 1, 2],
-        [1, 2, 2, 2, 1, 2, 2],
-        [2, 1, 2, 1, 2, 2, 2]
-    ]),
-    'August': np.array([
-        [2, 2, 2, 1, 2, 2, 1],
-        [2, 1, 2, 2, 1, 2, 2],
-        [2, 2, 1, 2, 2, 1, 2],
-        [1, 2, 2, 2, 1, 2, 2],
-        [2, 2, 2, 1, 2, 2, 1],
-        [2, 1, 2, 2, 2, 1, 2]
-    ]),
-    'October': np.array([
-        [2, 2, 2, 1, 2, 2, 1],
-        [2, 1, 2, 2, 1, 2, 2],
-        [2, 2, 1, 2, 2, 1, 2],
-        [1, 2, 2, 2, 1, 2, 2],
-        [2, 2, 2, 1, 2, 2, 1],
-        [1, 2, 1, 2, 2, 2, 2]
-    ]),
-    'December': np.array([
-        [2, 2, 2, 1, 2, 2, 1],
-        [2, 1, 2, 2, 1, 2, 2],
-        [2, 2, 1, 2, 2, 1, 2],
-        [1, 2, 2, 2, 1, 2, 2],
-        [2, 2, 2, 1, 2, 2, 1],
-        [2, 1, 2, 1, 2, 2, 2]
-    ]),
+    'February': np.array(bimonthly_values[0]),
+    'April': np.array(bimonthly_values[1]),
+    'June': np.array(bimonthly_values[2]),
+    'August': np.array(bimonthly_values[3]),
+    'October': np.array(bimonthly_values[4]),
+    'December': np.array(bimonthly_values[5]),
 }
 
 
