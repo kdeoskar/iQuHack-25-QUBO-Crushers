@@ -207,19 +207,19 @@ class QPSolver:
         max_temp = max(r_summer_columns)
 
         h = []
-        for position in range(42):
+        for position in range(self.lx*self.ly):
             temp = r_winter_columns[position]
             h.append((temp / max_temp) * 100)
         winter_colors = np.array(h)
 
         h = []
-        for position in range(42):
+        for position in range(self.lx*self.ly):
             temp = r_summer_columns[position]
             h.append((temp / max_temp) * 100)
         summer_colors = np.array(h)
 
-        columns = np.repeat(np.arange(7), 6)
-        rows = np.tile(np.arange(6), 7)
+        rows = np.repeat(np.arange(self.ly), self.lx)
+        columns = np.tile(np.arange(self.lx), self.ly)
         fig, axs = plt.subplots(1, 2, figsize=(10, 4))
 
         scatter_1 = axs[0].scatter(
@@ -227,31 +227,27 @@ class QPSolver:
             rows,
             c=winter_colors,
             cmap="viridis",
-            label=f"Winter Temperature Gradient in the Room, A = {self.A}",
+            label=f"Winter Temperature Gradient in the Room",
         )
-        axs[0].set_title("Winter Temperature Gradient")
+        axs[0].set_title(f"Winter Temperature Gradient, A = {self.A}")
         axs[0].grid(False)
-        axs[0].set_xlim(-0.5, 6.5)
-        axs[0].set_ylim(-0.5, 5.5)
+        axs[0].set_xlim(-0.5, self.lx-0.5)
+        axs[0].set_ylim(-0.5, self.ly-0.5)
 
         scatter_2 = axs[1].scatter(
             columns,
             rows,
             c=summer_colors,
             cmap="viridis",
-            label=f"Summer Temperature Gradient in the Room, A = {self.A}",
+            label=f"Summer Temperature Gradient in the Room",
         )
-        axs[1].set_title("Summer Temperature Gradient")
+        axs[1].set_title(f"Summer Temperature Gradient, A = {self.A}")
         axs[1].grid(False)
-        axs[1].set_xlim(-0.5, 6.5)
-        axs[1].set_ylim(-0.5, 5.5)
+        axs[1].set_xlim(-0.5, self.lx-0.5)
+        axs[1].set_ylim(-0.5, self.ly-0.5)
 
         plt.colorbar(scatter_1, ax=axs[0])
         plt.colorbar(scatter_2, ax=axs[1])
         plt.show()
         # plt.savefig("static/plot.png")
         plt.close()
-
-
-qp = QPSolver(15, 5, 20, 6, 7)
-qp.create_heatmap()
