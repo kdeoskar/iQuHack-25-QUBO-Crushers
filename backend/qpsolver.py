@@ -196,4 +196,5 @@ class QPSolver:
         axs[1].colorbar()
 
         plt.tight_layout()
-        plt.show()
+        plt.savefig("static/plot.png")
+        plt.close()
