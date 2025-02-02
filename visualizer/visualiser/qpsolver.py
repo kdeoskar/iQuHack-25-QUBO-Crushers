@@ -107,6 +107,7 @@ class QPSolver:
                             * self.y[j][n][(t + 1) % self.T]
                         )
         self.cqm.set_objective(c_flow + c_move)
+        
         for t in range(self.T):
             self.cqm.add_constraint(
                 quicksum(

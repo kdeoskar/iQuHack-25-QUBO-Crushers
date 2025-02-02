@@ -4,7 +4,7 @@ from plotly.offline import plot
 import numpy as np
 from .qpsolver import QPSolver
 
-qpsolver = QPSolver(15, 5, 10, 6, 5)
+qpsolver = QPSolver(15, 5, 15, 4, 5)
 qpsolver.setup_cqm()
 qpsolver.create_heatmap()
 qpsolver.run_cqm()
@@ -12,12 +12,12 @@ bimonthly_values = qpsolver.get_results()
 
 def index(request):
     months_data = {
-    'May': np.array(bimonthly_values[0]),
-    'June': np.array(bimonthly_values[1]),
-    'October': np.array(bimonthly_values[2]),
-    'December': np.array(bimonthly_values[3]),
     'February': np.array(bimonthly_values[4]),
     'April': np.array(bimonthly_values[5]),
+    'June': np.array(bimonthly_values[0]),
+    'August': np.array(bimonthly_values[1]),
+    'October': np.array(bimonthly_values[2]),
+    'December': np.array(bimonthly_values[3]),
 }
 
 
