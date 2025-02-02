@@ -154,18 +154,43 @@ x_out = []
 # print(x_out)
 
 # Plotting Temp
+max_temp = max(r_summer_columns)
+
 h = []
-for position in range(16):
+for position in range(21):
     temp = r_winter_columns[position]
-    h.append((58/temp)*6)
+    h.append((temp / max_temp) * 100)
 winter_colors = np.array(h)
-h=[]
-for position in range(16):
+
+h = []
+for position in range(21):
     temp = r_summer_columns[position]
-    h.append((58/temp)*6)
+    h.append((temp / max_temp) * 100)
 summer_colors = np.array(h)
 
 x = np.array([i for i in range(4)])
 y = np.array([j for j in range(5)])
-plt.scatter(x, y, c=winter_colors, cmap="viridis")
+fig, axs = plt.subplots(1, 2, figsize=(10, 4))
+axs[0].scatter(
+    x,
+    y,
+    c=winter_colors,
+    cmap="viridis",
+    label="Winter Temperature Gradient in the Room",
+)
+axs[0].set_title("Winter Temperature Gradient")
+axs[0].grid(True)
+axs[0].colorbar()
+axs[1].scatter(
+    x,
+    y,
+    c=summer_colors,
+    cmap="viridis",
+    label="Summer Temperature Gradient in the Room",
+)
+axs[1].set_title("Summer Temperature Gradient")
+axs[1].grid(True)
+axs[1].colorbar()
+plt.tight_layout()
 plt.show()
+plt.close()
