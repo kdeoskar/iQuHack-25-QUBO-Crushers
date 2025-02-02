@@ -5,23 +5,20 @@ import matplotlib.pyplot as plt
 
 
 class QPSolver:
-    def __init__(self, A) -> None:
-        self.C = 8
-        self.D = 34
+    def __init__(self, A, C, D, x, y) -> None:
+        self.lx = x
+        self.ly = y
+
+        self.C = C
+        self.D = D
         self.T = 6
 
         self.x = [
-            [
-                [Binary(f"x_{i}_{m}_{t}") for t in range(self.T)]
-                for m in range(self.C + self.D)
-            ]
+            [[Binary(f"x_{i}_{m}_{t}") for t in range(self.T)] for m in range(x * y)]
             for i in range(self.C)
         ]
         self.y = [
-            [
-                [Binary(f"y_{j}_{n}_{t}") for t in range(self.T)]
-                for n in range(self.C + self.D)
-            ]
+            [[Binary(f"y_{j}_{n}_{t}") for t in range(self.T)] for n in range(x * y)]
             for j in range(self.D)
         ]
 
@@ -43,23 +40,29 @@ class QPSolver:
 
         self.d = [
             [
-                (((j % 6) - (i % 6)) ** 2 + ((j // 6) - (i // 6)) ** 2) ** 0.5
-                for i in range(self.C + self.D)
+                (((j % x) - (i % x)) ** 2 + ((j // x) - (i // x)) ** 2) ** 0.5
+                for i in range(x * y)
             ]
-            for j in range(self.C + self.D)
+            for j in range(x * y)
         ]
 
         self.r = [
             [
-                30 + a * (abs(np.sin(np.pi * i / 5)) + abs(np.sin(np.pi * j / 6)))
-                for j in range(7)
-                for i in range(6)
+                30 + a * np.sin(min([i, j, x - i, y - j]))
+                for j in range(y)
+                for i in range(x)
             ]
             for a in [-A, -A / 4, A / 4, A, A / 4, -A / 4]
         ]
-        print(self.r[0])
-        print(self.r[1])
-        print(self.r[2])
+
+        plt.plot(self.r[0])
+        plt.plot(self.r[1])
+        plt.plot(self.r[2])
+        plt.show()
+
+        # print(self.r[0])
+        # print(self.r[1])
+        # print(self.r[2])
 
         self.result = None
 
@@ -73,8 +76,8 @@ class QPSolver:
         for t in range(self.T):
             for i in range(self.C):
                 for j in range(self.D):
-                    for n in range(self.C + self.D):
-                        for m in range(self.C + self.D):
+                    for n in range(self.lx * self.ly):
+                        for m in range(self.lx * self.ly):
                             c_flow += (
                                 -self.x[i][m][t]
                                 * self.y[j][n][t]
@@ -82,8 +85,8 @@ class QPSolver:
                                 / (1 + self.d[m][n])
                             )
 
-                for n in range(self.C + self.D):
-                    for m in range(self.C + self.D):
+                for n in range(self.lx * self.ly):
+                    for m in range(self.lx + self.ly):
                         c_move += (
                             self.d[m][n]
                             * self.d[m][n]
@@ -92,10 +95,11 @@ class QPSolver:
                         )
 
             for j in range(self.D):
-                for m in range(self.C + self.D):
-                    for n in range(self.C + self.D):
+                for m in range(self.lx * self.ly):
+                    for n in range(self.lx * self.ly):
                         c_move += (
                             self.d[m][n]
+                            * self.d[m][n]
                             * self.y[j][m][t]
                             * self.y[j][n][(t + 1) % self.T]
                         )
@@ -108,7 +112,7 @@ class QPSolver:
                     [
                         self.x[i][m][t]
                         for i in range(self.C)
-                        for m in range(self.C + self.D)
+                        for m in range(self.lx * self.ly)
                     ]
                 )
                 == self.C
@@ -119,29 +123,29 @@ class QPSolver:
                     [
                         self.y[j][n][t]
                         for j in range(self.D)
-                        for n in range(self.C + self.D)
+                        for n in range(self.lx * self.ly)
                     ]
                 )
                 == self.D
             )
 
-            for n in range(self.C + self.D):
+            for n in range(self.lx * self.ly):
                 self.cqm.add_constraint(
                     quicksum(
                         [self.x[i][n][t] for i in range(self.C)]
                         + [self.y[j][n][t] for j in range(self.D)]
                     )
-                    == 1
+                    <= 1
                 )
 
             for j in range(self.D):
                 self.cqm.add_constraint(
-                    quicksum([self.y[j][n][t] for n in range(self.C + self.D)]) == 1
+                    quicksum([self.y[j][n][t] for n in range(self.lx * self.ly)]) == 1
                 )
 
             for i in range(self.C):
                 self.cqm.add_constraint(
-                    quicksum([self.x[i][m][t] for m in range(self.C + self.D)]) == 1
+                    quicksum([self.x[i][m][t] for m in range(self.lx * self.ly)]) == 1
                 )
                 # for j in range(self.D):
                 #     for n in range(self.C + self.D):
@@ -172,17 +176,25 @@ class QPSolver:
             print("Run CQM before getting result")
             return None
 
-        data = [[[0 for _ in range(6)] for _ in range(7)] for _ in range(self.T)]
+        data = [
+            [[0 for _ in range(self.lx)] for _ in range(self.ly)] for _ in range(self.T)
+        ]
 
         for t in range(self.T):
-            for i in range(self.C + self.D):
-                x = i % 6
-                y = i // 6
+            for i in range(self.lx * self.ly):
+                x = i % self.lx
+                y = i // self.lx
 
                 data[t][y][x] = (
                     1
                     if sum(self.result[f"x_{j}_{i}_{t}"] for j in range(self.C)) == 1
-                    else 2
+                    else 0
+                )
+
+                data[t][y][x] = (
+                    2
+                    if sum(self.result[f"y_{j}_{i}_{t}"] for j in range(self.D)) == 1
+                    else data[t][y][x]
                 )
 
         return data
@@ -235,10 +247,7 @@ class QPSolver:
         plt.close()
 
 
-# qp = QPSolver(10)
-# qp.setup_cqm()
-# qp.run_cqm()
-# print(qp.get_results())
-
-qpsolver = QPSolver(15)
-qpsolver.create_heatmap()
+qp = QPSolver(15, 5, 20, 6, 5)
+qp.setup_cqm()
+qp.run_cqm()
+print(qp.get_results())
