@@ -73,7 +73,10 @@ class QPSolver:
                     for n in range(self.C + self.D):
                         for m in range(self.C + self.D):
                             c_flow += (
-                                self.d[m][n] * self.x[i][m][t] * self.yz[i][j][n][t]
+                                self.x[i][m][t]
+                                * self.yz[i][j][n][t]
+                                * self.r[t][n]
+                                / (1 + self.d[m][n])
                             )
 
                 for n in range(self.C + self.D):
@@ -166,17 +169,20 @@ class QPSolver:
             print("Run CQM before getting result")
             return None
 
-        x_out = []
+        data = [[[0 for _ in range(4)] for _ in range(5)] for _ in range(self.T)]
 
         for t in range(self.T):
-            for m in range(self.C + self.D):
-                x_out.append(int(self.result[f"x_0_{m}_{t}"]))
+            for i in range(self.C + self.D):
+                x = i % 4
+                y = i // 4
 
-            x_out.append("next")
+                data[t][y][x] = (
+                    1
+                    if sum(self.result[f"x_{j}_{i}_{t}"] for j in range(self.C)) == 1
+                    else 2
+                )
 
-        print(x_out)
-
-        return self.result
+        return data
 
     def create_heatmap(self):
         # Create a scatterplot of heat for the frontend
