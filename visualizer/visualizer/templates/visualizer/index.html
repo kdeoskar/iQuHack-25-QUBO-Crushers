@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Center Optimization</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            background-color: #f8f8f8;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #0077b6, #00b4d8);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .app-header h1 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+
+        .app-header p {
+            font-size: 1.2rem;
+            margin-top: 0;
+        }
+
+        .main-content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-around;
+        }
+
+        section {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            flex: 1 1 calc(50% - 40px);
+            min-width: 300px;
+        }
+
+        h2 {
+            color: #0077b6;
+            border-bottom: 3px solid #0077b6;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .output-section {
+            background-color: #0077b6;
+            color: #fff;
+            flex: 1 1 100%;
+        }
+
+        .plot-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns */
+            grid-template-rows: repeat(2, 1fr);    /* 2 rows */
+            gap: 20px; /* Space between plots */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .plot-container {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #0077b6, #00b4d8);
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer p {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Data Center Layout Optimization</h1>
+            <p>Visualizing Seasonal Layouts</p>
+        </header>
+
+        <main class="main-content">
+            <section class="output-section" id="output-section">
+                <div class="plot-grid">
+                    {% for season, plot_div in plot_divs.items %}
+                        <div id="{{ season }}-plot" class = "plot-container">
+                            {{ plot_div|safe }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 Data Center Optimization</p>
+        </footer>
+    </div>
+    <script>
+    </script>
+</body>
+</html>
