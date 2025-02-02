@@ -29,14 +29,12 @@ cost_to_move = [[Integer(f"{i}_{t}") for i in range(num_coolers)] for t in range
 cost_to_stay = [[Integer(f"{i}_{t}") for i in range(num_coolers) for t in range(0,12)]]
 
 for j in range(num_servers):
-    # print(sum([amount_cooling_needed[t][j] for t in range(0,12)]))
-    cqm.add_constraint(sum([sum([Z[t][j][i].linear[f"{i}_{j}_{t}"] for i in range(num_coolers)]) for t in range(0,12)]) == sum([amount_cooling_needed[t][j] for t in range(0,12)]))
+    cqm.add_constraint(sum([sum([Z[t][j][i] for i in range(num_coolers)]) for t in range(0,12)]) == sum([amount_cooling_needed[t][j].linear[f"{j}_{t}"] for t in range(0,12)]))
 for i in range(num_coolers):
     cqm.add_constraint(sum([sum([Z[t][j][i].linear[f"{i}_{j}_{t}"] for j in range(num_servers)]) for t in range(0,12)]) == sum([amount_cooling_used[t][i] for t in range(0,12)]))
-print(X[0][0][0].linear["0_0_0"])
 print(float(sum([sum([sum([X[t][m][i].linear[f"{i}_{m}_{t}"] for i in range(num_coolers)]) for m in range(0, num_coolers+num_servers)]) for t in range(0,12)])))
 print(float(num_coolers*(num_coolers+num_servers)*12))
-cqm.add_constraint(lhs = (sum([sum([sum([X[t][m][i].linear[f"{i}_{m}_{t}"] for i in range(num_coolers)]) for m in range(num_coolers+num_servers)]) for t in range(0,12)])) ==
+cqm.add_constraint((sum([sum([sum([X[t][m][i].linear[f"{i}_{m}_{t}"] for i in range(num_coolers)]) for m in range(num_coolers+num_servers)]) for t in range(0,12)])) ==
                    num_coolers*(num_coolers+num_servers)*12)
 cqm.add_constraint(sum([sum([sum([Y[t][n][j].linear[f"{j}_{n}_{t}"] for j in range(num_servers)]) for n in range(0, num_coolers+num_servers)]) for t in range(0,12)]) == num_servers)
 
