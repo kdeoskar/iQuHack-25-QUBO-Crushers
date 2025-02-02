@@ -206,9 +206,7 @@ class QPSolver:
         summer_colors = np.array(h)
 
         x = np.repeat(np.arange(7), 6)
-        print(x)
         y = np.tile(np.arange(6), 7)
-        print(y)
         fig, axs = plt.subplots(1, 2, figsize=(10, 4))
         scatter_1 = axs[0].scatter(
             x,
