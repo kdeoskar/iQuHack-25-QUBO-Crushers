@@ -6,8 +6,12 @@ C = 10  # Numer of coolers
 D = 5  # Number of servers
 T = 6  # Number of time steps
 
-r_winter_columns = [[15+abs(np.sin(np.pi*(i/3)))+abs(np.sin(np.pi*(j/4))) for i in range(0,4)] for j in range(0,5)]
+A = 7.5 # Amplitude of temperature change
 
+r_winter_columns = np.array([[30+A*abs(np.sin(np.pi*(i/3)))+A*abs(np.sin(np.pi*(j/4))) for i in range(0,4)] for j in range(0,5)]).flatten()
+r_summer_columns = np.array([[30-A*abs(np.sin(np.pi*(i/3)))-A*abs(np.sin(np.pi*(j/4))) for i in range(0,4)] for j in range(0,5)]).flatten()
+c_winter_columns = r_winter_columns
+c_summer_columns = r_summer_columns
 
 # Index/Position/Time
 x = [
