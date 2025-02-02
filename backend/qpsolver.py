@@ -12,6 +12,7 @@ class QPSolver:
         self.C = C
         self.D = D
         self.T = 6
+        self.A = A
 
         self.x = [
             [[Binary(f"x_{i}_{m}_{t}") for t in range(self.T)] for m in range(x * y)]
@@ -48,7 +49,7 @@ class QPSolver:
 
         self.r = [
             [
-                30 + a * np.sin(min([i, j, x - i, y - j]))
+                30 + a * np.cos(min([i, j, x - i - 1 , y - j - 1]))
                 for j in range(y)
                 for i in range(x)
             ]
@@ -217,28 +218,33 @@ class QPSolver:
             h.append((temp / max_temp) * 100)
         summer_colors = np.array(h)
 
-        x = np.repeat(np.arange(7), 6)
-        y = np.tile(np.arange(6), 7)
+        columns = np.repeat(np.arange(7), 6)
+        rows = np.tile(np.arange(6), 7)
         fig, axs = plt.subplots(1, 2, figsize=(10, 4))
+
         scatter_1 = axs[0].scatter(
-            x,
-            y,
+            columns,
+            rows,
             c=winter_colors,
             cmap="viridis",
-            label="Winter Temperature Gradient in the Room",
+            label=f"Winter Temperature Gradient in the Room, A = {self.A}",
         )
         axs[0].set_title("Winter Temperature Gradient")
         axs[0].grid(False)
+        axs[0].set_xlim(-0.5, 6.5)
+        axs[0].set_ylim(-0.5, 5.5)
 
         scatter_2 = axs[1].scatter(
-            x,
-            y,
+            columns,
+            rows,
             c=summer_colors,
             cmap="viridis",
-            label="Summer Temperature Gradient in the Room",
+            label=f"Summer Temperature Gradient in the Room, A = {self.A}",
         )
         axs[1].set_title("Summer Temperature Gradient")
         axs[1].grid(False)
+        axs[1].set_xlim(-0.5, 6.5)
+        axs[1].set_ylim(-0.5, 5.5)
 
         plt.colorbar(scatter_1, ax=axs[0])
         plt.colorbar(scatter_2, ax=axs[1])
@@ -247,7 +253,5 @@ class QPSolver:
         plt.close()
 
 
-qp = QPSolver(15, 5, 20, 6, 5)
-qp.setup_cqm()
-qp.run_cqm()
-print(qp.get_results())
+qp = QPSolver(15, 5, 20, 6, 7)
+qp.create_heatmap()
